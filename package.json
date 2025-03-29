@@ -1,0 +1,22 @@
+{
+  "name": "simplechat",
+  "version": "1.0.0",
+  "description": "a simple chat wiht socke.io",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/manuelguirado/simpleChat.git"
+  },
+  "keywords": [
+    "chat"
+  ],
+  "author": "manuelguirado",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/manuelguirado/simpleChat/issues"
+  },
+  "homepage": "https://github.com/manuelguirado/simpleChat#readme"
+}
