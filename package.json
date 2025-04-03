@@ -2,9 +2,11 @@
   "name": "simplechat",
   "version": "1.0.0",
   "description": "a simple chat wiht socke.io",
+  "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js",
+    "dev": "node --watch ./server/index.js "
   },
   "repository": {
     "type": "git",
@@ -18,5 +20,14 @@
   "bugs": {
     "url": "https://github.com/manuelguirado/simpleChat/issues"
   },
-  "homepage": "https://github.com/manuelguirado/simpleChat#readme"
+  "homepage": "https://github.com/manuelguirado/simpleChat#readme",
+  "dependencies": {
+    "body-parser": "^2.2.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "morgan": "^1.10.0",
+    "socket.io": "^4.8.1",
+    "stream-chat": "^8.58.0"
+  }
 }
