@@ -29,6 +29,7 @@ simpleChat is a lightweight and easy-to-use chat application designed for real-t
     ```bash
     npm start
     ```
+
 5. Open your browser and navigate to `http://localhost:3000`.
 
 ## Usage
