@@ -26,10 +26,11 @@ const db = createClient({
 await db.execute(`
     CREATE TABLE IF NOT EXISTS messages (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      content TEXT
+      content TEXT,
+      userName TEXT
     );
   `);
-io.on('connection', (socket) => {
+io.on('connection', async (socket) => {
     console.log('a user connected');
     //listen when a user is disconnected
     socket.on('disconnect', () => {
@@ -37,23 +38,42 @@ io.on('connection', (socket) => {
         console.log('user disconnected');
     });
     //listen when a user sends a message
-    socket.on('chat message', async (msg) => {
+    socket.on('chat message', async (msg,userName) => {
         let result;
         try {
-          console.log(msg)
+     
         
           result = await db.execute({
-            sql: `INSERT INTO messages (content) VALUES (:content)`,
-            args: { content: msg }
+            sql: `INSERT INTO messages  VALUES (:content, :userName)`,
+            args: { content: msg , userName}
           });
         } catch (e) {
           console.error(e)
           return
         }
       
-        io.emit('chat message', msg, result.lastInsertRowid.toString())
+        io.emit('chat message', msg, result.lastInsertRowid.toString(), userName)
       });
-    });
+    //recover all the messages 
+     if (!socket.recovered){
+      try{
+        const result = await db.execute({
+          sql :'SELECT id,content,userName FROM messages WHERE id > ?' ,
+          args: [socket.handshake.auth.serverOffset ?? 0]
+        })
+        result.rows.forEach(row => {
+          socket.emit('chat message', row.content, row.id, row.userName)
+        })
+
+      
+        }catch(e){
+          console.error(e)
+          return;
+        }
+      }
+
+     }
+    );
     app.get('/', (req, res) => {
     res.sendFile(process.cwd() + '/client/index.html');
 }

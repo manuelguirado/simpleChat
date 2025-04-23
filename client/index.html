@@ -6,7 +6,23 @@
   <title>Socket.IO chat</title>
   <script type="module">
     import {io} from "https://cdn.socket.io/4.5.4/socket.io.esm.min.js";
-    const socket = io();
+    //get the username
+    const getUserName = async () => {
+      const userName = localStorage.getItem('userName');
+      if (userName){
+        console.log(`userName: ${userName}`);
+      }
+      const res = await fetch('https://random-data-api.com/api/v2/users')
+      const {username : randomUsername} = await res.json();
+      localStorage.setItem('userName', randomUsername);
+   
+      return randomUsername;
+    const socket = io({
+  auth: {
+    userName: await getUserName(),
+    serverOffset: 0
+  }
+})
     //get the form
     const form = document.getElementById('form');
     //get the input
@@ -17,19 +33,20 @@
       e.preventDefault();
       if (input.value) {
         //emit the message to the server
-        socket.emit('chat message', input.value);
+        socket.emit('chat message', input.value, userName);
         input.value = '';
       }
     });
     //listen for the message from the server
-    socket.on('chat message', (msg) => {
-        //create a new list item
-        const item =`<li>${msg}</li>`;
-        //append the list item to the message list
-        message.insertAdjacentHTML('beforeend', item);
+   
+socket.on('chat message', (msg, serverOffset,userName) => {
+  const item = `<li>${msg}</li>`;
+  message.insertAdjacentHTML('beforeend', item);
+  socket.auth.serverOffset = serverOffset 
+})
+    
 
-
-    })
+    }
   </script>
   <style>
     *,
