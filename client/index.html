@@ -9,6 +9,8 @@
     //get the username
     const getUserName = async () => {
       const userName = localStorage.getItem('userName');
+      //check if the userName is in localStorage
+       
       if (userName){
         console.log(`userName: ${userName}`);
       }
@@ -17,13 +19,15 @@
       localStorage.setItem('userName', randomUsername);
    
       return randomUsername;
+    }
+    //get the form
     const socket = io({
-  auth: {
+     auth: {
     userName: await getUserName(),
     serverOffset: 0
   }
-})
-    //get the form
+    });
+    
     const form = document.getElementById('form');
     //get the input
     const input = document.getElementById('input');
@@ -33,20 +37,22 @@
       e.preventDefault();
       if (input.value) {
         //emit the message to the server
-        socket.emit('chat message', input.value, userName);
+        socket.emit('chat message', input.value);
         input.value = '';
       }
     });
     //listen for the message from the server
    
 socket.on('chat message', (msg, serverOffset,userName) => {
-  const item = `<li>${msg}</li>`;
+  const item = `<li>
+    <p>${msg}</p>
+    <small> ${userName}<small></li>`;
   message.insertAdjacentHTML('beforeend', item);
   socket.auth.serverOffset = serverOffset 
 })
     
 
-    }
+    
   </script>
   <style>
     *,

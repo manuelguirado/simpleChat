@@ -8,6 +8,7 @@ dotenv.config( {path: './server/.env' });
 const port = process.env.PORT || 3000;
 const app = express();
 const server = createServer(app);
+app.use(logger('dev'));
 const io  = new Server(server, {
     connectionStateRecovery: {},
 
@@ -38,21 +39,22 @@ io.on('connection', async (socket) => {
         console.log('user disconnected');
     });
     //listen when a user sends a message
-    socket.on('chat message', async (msg,userName) => {
+    socket.on('chat message', async (msg) => {
         let result;
+        const username = socket.handshake.auth.userName ?? 'anonymous';
         try {
-     
+       
         
           result = await db.execute({
-            sql: `INSERT INTO messages  VALUES (:content, :userName)`,
-            args: { content: msg , userName}
+            sql: `INSERT INTO messages (content,userName) VALUES (:content, :userName)`,
+            args: { content: msg , userName : username}
           });
         } catch (e) {
           console.error(e)
           return
         }
       
-        io.emit('chat message', msg, result.lastInsertRowid.toString(), userName)
+        io.emit('chat message', msg, result.lastInsertRowid.toString(), username)
       });
     //recover all the messages 
      if (!socket.recovered){
