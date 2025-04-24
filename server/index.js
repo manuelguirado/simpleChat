@@ -67,7 +67,6 @@ io.on('connection', async (socket) => {
           socket.emit('chat message', row.content, row.id, row.userName)
         })
 
-      
         }catch(e){
           console.error(e)
           return;
